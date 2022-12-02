@@ -1,5 +1,6 @@
 (ns day2.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.set :as set]))
 
 (def opponent-winning-combinations #{"A Z" "B X" "C Y"})
 
@@ -7,10 +8,17 @@
 
 (defn replace-intent-with-move [move]
   (let [[opponent-move my-move] (str/split move #" ")
-        losing-move (first (filter #(re-matches (re-pattern opponent-move) %) 
-                                   opponent-winning-combinations))
-        ; TODO
-        ]))
+        losing-combination (first (filter #(re-matches (re-pattern (str opponent-move "..")) %)
+                                          opponent-winning-combinations))
+        losing-move (-> losing-combination
+                        (str/split #" ")
+                        (second))
+        draw-move (str (char (+ (int \X) (- (int (get opponent-move 0)) (int \A)))))
+        winning-move (first (set/difference #{"X" "Y" "Z"} #{losing-move draw-move}))]
+    (str opponent-move " " (case my-move
+                             "X" losing-move
+                             "Y" draw-move
+                             "Z" winning-move))))
 
 (defn is-draw [move]
   (let [[opponent-move my-move] (str/split move #" ")
