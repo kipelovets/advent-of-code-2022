@@ -17,3 +17,4 @@ build
 */.nrepl-port
 */.prepl-port
 */.lsp
+*/input
