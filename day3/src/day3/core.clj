@@ -15,10 +15,21 @@
     (inc (- char base))))
 
 (defn task1 [rucksacks]
-  (reduce + (map priority (reduce concat (map illegal-items rucksacks)))))
+  (->> rucksacks
+       (map illegal-items)
+       (reduce concat)
+       (map priority)
+       (reduce +)))
+
+(defn group-badge [group]
+  (->> group
+       (map set)
+       (apply set/intersection)))
 
 (defn task2 [rucksacks]
-  (let [groups (partition 3 rucksacks)
-        common-items (map (fn [group] (apply set/intersection (map set group))) groups)
-        flat-items (reduce concat common-items)]
-    (reduce + (map priority flat-items))))
+  (->> rucksacks
+       (partition 3)
+       (map group-badge)
+       (reduce concat)
+       (map priority)
+       (reduce +)))
