@@ -18,16 +18,22 @@
     (is (= [[2 3 4] [6 7 8]] (first parsed))))
 
   (testing "pair contains overlap"
-    (let [overlaps (map pair-has-overlap parsed)]
+    (let [overlaps (map pair-has-full-overlap parsed)]
       (is (= [false false false true true false] overlaps))))
 
   (testing "task1"
-    (is (= 2 (task1 sample-input)))))
+    (is (= 2 (task1 sample-input))))
+
+  (testing "task2"
+    (is (= 4 (task2 sample-input)))))
 
 (def real-input (slurp "input"))
 
 (deftest test-real-input
   (testing "task1"
-    (is (= 651 (task1 real-input)))))
+    (is (= 651 (task1 real-input))))
+
+  (testing "task2"
+    (is (= 956 (task2 real-input)))))
 
 
