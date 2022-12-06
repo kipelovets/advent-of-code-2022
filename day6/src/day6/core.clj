@@ -1,13 +1,22 @@
 (ns day6.core
   (:require [clojure.string :as str]))
 
+
+(defn find-unique-subs [buffer len]
+  (loop [ind 0]
+    (if (> ind (+ (count buffer) len))
+      nil
+      (let [chars (subs buffer ind (+ ind len))]
+        (if (= len (count (set chars)))
+          (+ len ind)
+          (recur (inc ind)))))))
+
 (def marker-len 4)
 
 (defn find-marker [buffer]
-  (loop [ind 0]
-    (if (> ind (+ (count buffer) marker-len))
-      nil
-      (let [chars (subs buffer ind (+ ind marker-len))]
-        (if (= marker-len (count (set chars)))
-          (+ marker-len ind)
-          (recur (inc ind)))))))
+  (find-unique-subs buffer marker-len))
+
+(def message-len 14)
+
+(defn find-message [buffer]
+  (find-unique-subs buffer message-len))

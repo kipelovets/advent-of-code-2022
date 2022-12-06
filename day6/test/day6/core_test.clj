@@ -12,3 +12,14 @@
 
   (testing "real input"
     (is (= 1640 (find-marker (slurp "input"))))))
+
+(deftest test-find-message
+  (testing "sample input"
+    (is (= 19 (find-message "mjqjpqmgbljsphdztnvjfqwrcgsmlb")))
+    (is (= 23 (find-message "bvwbjplbgvbhsrlpgdmjqwftvncz")))
+    (is (= 23 (find-message "nppdvjthqldpwncqszvftbrmjlhg")))
+    (is (= 29 (find-message "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")))
+    (is (= 26 (find-message "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"))))
+
+  (testing "real input"
+    (is (= 0 (find-message (slurp "input"))))))
