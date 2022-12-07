@@ -1,6 +1,4 @@
-(ns day6.core
-  (:require [clojure.string :as str]))
-
+(ns day6.core)
 
 (defn find-unique-subs [buffer len]
   (loop [ind 0]
