@@ -37,3 +37,32 @@
   (reduce + (for [y (range (count forest))
                   x (range (count (first forest)))]
               (if (visible? forest y x) 1 0))))
+
+(defn viewing-distance-direction [tree direction-row]
+  (if (empty? direction-row) 0
+      (->> direction-row
+           (take-while #(< % tree))
+           count
+           inc
+           (min (count direction-row)))))
+
+(defn scenic-score [forest y x]
+  (let [tree (nth (nth forest y) x)
+        row (nth forest y)
+        col (map #(nth % x) forest)]
+    (reduce *
+            [(viewing-distance-direction tree (reverse (take x row)))
+             (viewing-distance-direction tree (drop (inc x) row))
+             (viewing-distance-direction tree (reverse (take y col)))
+             (viewing-distance-direction tree (drop (inc y) col))])))
+
+(defn forest-scenic-scores [forest]
+  (map (fn [y]
+         (map (fn [x]
+                (scenic-score forest y x))
+              (range (count (first forest)))))
+       (range (count forest))))
+
+(defn task2 [forest]
+  (let [scores (forest-scenic-scores forest)]
+    (apply max (map #(apply max %) scores))))

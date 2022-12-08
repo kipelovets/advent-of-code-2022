@@ -21,3 +21,15 @@
 
   (testing "real input"
     (is (= 1823 (task1 real-forest)))))
+
+(deftest test-scenic-score
+  (testing "sample input"
+    (is (= 4 (scenic-score sample-forest 1 2)))
+    (is (= 8 (scenic-score sample-forest 3 2)))))
+
+(deftest test-task2
+  (testing "sample input"
+    (is (= 8 (task2 sample-forest))))
+
+  (testing "real inpuit"
+    (is (= 211680 (task2 real-forest)))))

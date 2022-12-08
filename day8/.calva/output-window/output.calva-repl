@@ -32,3 +32,36 @@ clj꞉day8.core꞉> 
 clj꞉day8.core꞉> 
 ; ClassCastException class clojure.lang.LazySeq cannot be cast to class java.lang.Number (clojure.lang.LazySeq is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')  day8.core/eval6177/visible?--6178/fn--6179 (form-init17733553823473473320.clj:35)
 clj꞉day8.core꞉> 
+; CompilerException java.lang.RuntimeException: Unable to resolve symbol: viewing-distance-direction in this context, compiling:(/Users/georgii.korshunov/Dev/_personal/advent-of-code-2022/day8/src/day8/core.clj:52:14) 
+clj꞉day8.core꞉> 
+; Evaluating file: core.clj
+0
+clj꞉day8.core꞉> 
+#'day8.core/scenic-score
+clj꞉day8.core꞉> 
+QUIT
+clj꞉day8.core꞉> 
+; Evaluating file: core.clj
+9
+clj꞉day8.core꞉> 
+9
+clj꞉day8.core꞉> 
+#'day8.core/scenic-score
+clj꞉day8.core꞉> 
+QUIT
+clj꞉day8.core꞉> 
+#'day8.core/viewing-distance-direction
+clj꞉day8.core꞉> 
+QUIT
+clj꞉day8.core꞉> 
+#'day8.core/viewing-distance-direction
+clj꞉day8.core꞉> 
+QUIT
+clj꞉day8.core꞉> 
+; Evaluating file: core.clj
+12
+clj꞉day8.core꞉> 
+#'day8.core/viewing-distance-direction
+clj꞉day8.core꞉> 
+QUIT
+clj꞉day8.core꞉> 
