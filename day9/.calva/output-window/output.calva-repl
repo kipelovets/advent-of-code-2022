@@ -18,27 +18,41 @@
 clj꞉day9.core꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉day9.core꞉> 
-#'day9.core/follow-head
+[[[4 0]] [[4 1] [4 0]]]
 clj꞉day9.core꞉> 
-#'day9.core/touching?
+[[[4 0]] [[4 1] [4 0]]]
 clj꞉day9.core꞉> 
-false
-clj꞉day9.core꞉> 
-#'day9.core/touching?
+#'day9.core/follow-direction
 clj꞉day9.core꞉> 
 QUIT
 clj꞉day9.core꞉> 
-#'day9.core/move-closer
-clj꞉day9.core꞉> 
-true
-clj꞉day9.core꞉> 
-[3 1]
-clj꞉day9.core꞉> 
-#'day9.core/move-closer
+#'day9.core/move-knots
 clj꞉day9.core꞉> 
 QUIT
 clj꞉day9.core꞉> 
-#'day9.core/touching?
+[[[4 1]] [[4 1] [4 0]]]
+clj꞉day9.core꞉> 
+#'day9.core/follow-direction
+clj꞉day9.core꞉> 
+#'day9.core/move-knots
+clj꞉day9.core꞉> 
+QUIT
+clj꞉day9.core꞉> 
+[[[4 0] [4 1]] [[4 1] [4 0]]]
+clj꞉day9.core꞉> 
+#'day9.core/follow-direction
+clj꞉day9.core꞉> 
+QUIT
+clj꞉day9.core꞉> 
+[[[4 0] [4 0] [4 1] [4 2] [4 3]] [[4 4] [4 3]]]
+clj꞉day9.core꞉> 
+#'day9.core/follow-direction
+clj꞉day9.core꞉> 
+QUIT
+clj꞉day9.core꞉> 
+([4 0] [4 1] nil)
+clj꞉day9.core꞉> 
+#'day9.core/follow-motions
 clj꞉day9.core꞉> 
 QUIT
 clj꞉day9.core꞉> 

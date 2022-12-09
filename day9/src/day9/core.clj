@@ -33,27 +33,42 @@
 (defn move-dir [coord dir]
   (coord-add coord (dcoords dir)))
 
-(defn follow-direction [head tail dir steps]
-  (loop [tail-visited []
-         steps-left steps
-         cur-head head
-         cur-tail tail]
-    (if (= 0 steps-left)
-      [tail-visited cur-head cur-tail]
-      (let [new-head (move-dir cur-head dir)
-            new-tail (move-closer new-head cur-tail)]
-        (recur (conj tail-visited new-tail)
-               (dec steps-left)
-               new-head
-               new-tail)))))
+(defn move-knots [knots dir]
+  (let [new-head (move-dir (first knots) dir)]
+    (loop [tails (rest knots)
+           new-knots [new-head]]
+      (if (empty? tails)
+        new-knots
+        (recur (rest tails)
+               (conj new-knots
+                     (move-closer (last new-knots)
+                                  (first tails))))))))
 
-(defn follow-motions [head tail motions]
+(defn follow-direction
+  ([head tail dir steps]
+   (follow-direction [head tail] dir steps))
+  ([knots dir steps]
+   (loop [tail-visited [(last knots)]
+          steps-left steps
+          cur-knots knots]
+     (if (= 0 steps-left)
+       [tail-visited cur-knots]
+       (let [new-knots (move-knots cur-knots dir)
+             new-tail (last new-knots)]
+         (recur (conj tail-visited new-tail)
+                (dec steps-left)
+                new-knots))))))
+
+(defn follow-motions [knots motions]
   (if (empty? motions)
-    [tail]
+    [(last knots)]
     (let [[dir steps] (first motions)
-          [tail-visited new-head new-tail] (follow-direction head tail dir steps)]
+          [tail-visited new-knots] (follow-direction knots dir steps)]
       (concat tail-visited
-              (follow-motions new-head new-tail (rest motions))))))
+              (follow-motions new-knots (rest motions))))))
 
 (defn task1 [motions]
-  (count (set (follow-motions [0 0] [0 0] motions))))
+  (count (set (follow-motions [[0 0] [0 0]] motions))))
+
+(defn task2 [motions]
+  (count (set (follow-motions (repeat 10 [0 0]) motions))))
