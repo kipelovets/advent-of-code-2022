@@ -18,3 +18,4 @@ build
 */.prepl-port
 */.lsp
 */input
+**/output.calva-repl
