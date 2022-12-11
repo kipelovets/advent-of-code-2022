@@ -18,4 +18,5 @@ build
 */.prepl-port
 */.lsp
 */input
+*/sample-input
 **/output.calva-repl
