@@ -8,4 +8,5 @@
   :target-path "target/%s"
   :profiles {:kaocha {:dependencies [[lambdaisland/kaocha "1.60.972"]]}}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
-  :plugins [[lein-auto "0.1.2"]])
+  :plugins [[lein-auto "0.1.2"]]
+  :jvm-opts ["-Xss100m"])
