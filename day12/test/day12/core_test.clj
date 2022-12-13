@@ -17,7 +17,14 @@
   (is (= 5 (count (first sample-input))))
   (is (= "i" (nth (nth sample-input 7) 4))))
 
+(deftest test-nth2
+  (is (= (int \a) (nth2 sample-input 0 0)))
+  (is (= (int \a) (nth2 sample-input 0 1))))
+
 (deftest test-neighbours
   (is (= [[0 1] [1 0] [1 1]] (neighbours sample-input [0 0])))
-  (is (= [[6 3] [6 4] [7 3]] (neighbours sample-input [7 4])))
-  )
+  (is (= [[6 4] [7 3]] (neighbours sample-input [7 4]))))
+
+(deftest test-search 
+  (testing "sample-input"
+    (is (= 0 (search sample-input [0 0] [5 2] [[0 0]])))))
