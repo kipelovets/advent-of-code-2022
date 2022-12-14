@@ -6,11 +6,13 @@
                 (Math/pow (- (start 1) (goal 1)) 2))))
 
 (defn nth2 [map x y]
-  (let [val (-> map
-                (nth x)
-                (nth y)
-                (nth 0)
-                int)]
+  (-> map
+      (nth x)
+      (nth y)
+      (nth 0)))
+
+(defn height [map x y]
+  (let [val (int (nth2 map x y))]
     (cond
       (= val (int \S)) (int \a)
       (= val (int \E)) (int \z)
@@ -27,17 +29,22 @@
                    (< y (count (first map)))
                    (or (not= x (start 0))
                        (not= y (start 1)))
-                   (>= 1 (- (nth2 map x y) (nth2 map (start 0) (start 1)))))]
+                   (or (= dx 0)
+                       (= dy 0))
+                   (>= 1 (- (height map x y) (height map (start 0) (start 1)))))]
     [x y]))
 
-(defn search [map start goal visited]
-  (let [next-nodes (neighbours map start)
-        new-path-len (inc (count visited))]
-    (apply min ##Inf (for [node next-nodes
-                           :when (not (.contains visited node))]
-                       (if (= node goal)
-                         new-path-len
-                         (search map node goal (conj visited node)))))))
+(defn search
+  ([map start goal]
+   (dec (search map start goal [start])))
+  ([map start goal visited]
+   (let [next-nodes (neighbours map start)
+         new-path-len (inc (count visited))]
+     (apply min ##Inf (for [node next-nodes
+                            :when (not (.contains visited node))]
+                        (if (= node goal)
+                          new-path-len
+                          (search map node goal (conj visited node))))))))
 
 
 (def sample-data "Sabqponm
@@ -53,5 +60,14 @@ abdefghi")
        (apply map list)))
 
 (def sample-input (parse-input sample-data))
+(def real-input (parse-input (slurp "input")))
 
-(search sample-input [0 0] [5 2] [])
+(defn find-start-and-goal [map]
+  (let [result (for [x (range (count map))
+                     y (range (count (first map)))
+                     :let [symbol (nth2 map x y)]
+                     :when (or (= \S symbol)
+                               (= \E symbol))]
+                 {symbol [x y]})
+        result (apply merge result)]
+    [(result \S) (result \E)]))

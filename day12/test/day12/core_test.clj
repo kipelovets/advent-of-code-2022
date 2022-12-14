@@ -18,13 +18,23 @@
   (is (= "i" (nth (nth sample-input 7) 4))))
 
 (deftest test-nth2
-  (is (= (int \a) (nth2 sample-input 0 0)))
-  (is (= (int \a) (nth2 sample-input 0 1))))
+  (is (= \S (nth2 sample-input 0 0)))
+  (is (= \a (nth2 sample-input 0 1))))
 
 (deftest test-neighbours
-  (is (= [[0 1] [1 0] [1 1]] (neighbours sample-input [0 0])))
+  (is (= [[0 1] [1 0]] (neighbours sample-input [0 0])))
   (is (= [[6 4] [7 3]] (neighbours sample-input [7 4]))))
 
-(deftest test-search 
+(deftest test-find-start-and-goal
   (testing "sample-input"
-    (is (= 0 (search sample-input [0 0] [5 2] [[0 0]])))))
+    (is (= [[0 0] [5 2]] (find-start-and-goal sample-input))))
+
+  (testing "real input"
+    (is (= [[0 20] [119 20]] (find-start-and-goal real-input)))))
+
+(deftest test-search
+  (testing "sample-input"
+    (is (= 31 (search sample-input [0 0] [5 2]))))
+  (testing "real input"
+    (is (= nil (search real-input [0 20] [119 20])))))
+
