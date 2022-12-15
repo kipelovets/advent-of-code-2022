@@ -30,3 +30,14 @@
     (is (= 31 (search sample-input [0 0] [5 2]))))
   (testing "real input"
     (is (= 423 (search real-input [0 20] [119 20])))))
+
+(deftest test-lowest-points
+  (testing "sample-input"
+    (is (= '([0 0] [0 1] [0 2] [0 3] [0 4] [1 0])
+           (lowest-points sample-input)))))
+
+(deftest test-shortest-hike
+  (testing "sample-input"
+    (is (= 29 (shortest-hike sample-input [5 2]))))
+  (testing "real-input"
+    (is (= 416 (shortest-hike real-input [119 20])))))

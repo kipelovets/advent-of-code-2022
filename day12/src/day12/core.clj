@@ -87,3 +87,15 @@ abdefghi")
 (defn search [map start end]
   (let [paths (dijkstra start (successors map))]
     (paths end)))
+
+(defn lowest-points [map]
+  (for [x (range (count map))
+        y (range (count (first map)))
+        :when (= (int \a) (height map x y))]
+    [x y]))
+
+(defn shortest-hike [input end]
+  (->> (lowest-points input)
+       (map #(search input % end))
+       (filter some?)
+       (reduce min)))
