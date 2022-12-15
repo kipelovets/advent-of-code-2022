@@ -1,5 +1,6 @@
 (ns day12.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.data.priority-map :refer [priority-map]]))
 
 (defn distance [start goal]
   (Math/sqrt (+ (Math/pow (- (start 0) (goal 0)) 2)
@@ -34,19 +35,6 @@
                    (>= 1 (- (height map x y) (height map (start 0) (start 1)))))]
     [x y]))
 
-(defn search
-  ([map start goal]
-   (dec (search map start goal [start])))
-  ([map start goal visited]
-   (let [next-nodes (neighbours map start)
-         new-path-len (inc (count visited))]
-     (apply min ##Inf (for [node next-nodes
-                            :when (not (.contains visited node))]
-                        (if (= node goal)
-                          new-path-len
-                          (search map node goal (conj visited node))))))))
-
-
 (def sample-data "Sabqponm
 abcryxxl
 accszExk
@@ -62,12 +50,40 @@ abdefghi")
 (def sample-input (parse-input sample-data))
 (def real-input (parse-input (slurp "input")))
 
-(defn find-start-and-goal [map]
-  (let [result (for [x (range (count map))
-                     y (range (count (first map)))
-                     :let [symbol (nth2 map x y)]
-                     :when (or (= \S symbol)
-                               (= \E symbol))]
-                 {symbol [x y]})
-        result (apply merge result)]
-    [(result \S) (result \E)]))
+(defn successors [map]
+  (fn [node]
+    (let [ns (neighbours map node)]
+      (zipmap ns (repeat (count ns) 1)))))
+
+;; Inspired by https://gist.github.com/ummels/86c09182dee25b142280
+
+(defn map-vals [m f]
+  (into {} (for [[k v] m]
+             [k (f v)])))
+
+(defn remove-keys
+  "Removes entries from map m with keys where (pred key) is true"
+  [m pred]
+  (select-keys m
+               (filter (complement pred)
+                       (keys m))))
+
+(defn dijkstra
+  "Computes single-source shortest path distances in a directed graph.
+   Given a node n, (f n) should return a map with the successors of n as keys
+   and their (non-negative) distance from n as vals.
+   Returns a map from nodes to their distance from start."
+  [start successors]
+  (loop [q (priority-map start 0)
+         result {}]
+    (if-let [[node d] (peek q)]
+      (let [dist (-> (successors node)
+                     (remove-keys result)
+                     (map-vals (partial + d)))]
+        (recur (merge-with min (pop q) dist)
+               (assoc result node d)))
+      result)))
+
+(defn search [map start end]
+  (let [paths (dijkstra start (successors map))]
+    (paths end)))

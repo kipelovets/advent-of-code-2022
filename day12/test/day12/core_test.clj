@@ -25,16 +25,8 @@
   (is (= [[0 1] [1 0]] (neighbours sample-input [0 0])))
   (is (= [[6 4] [7 3]] (neighbours sample-input [7 4]))))
 
-(deftest test-find-start-and-goal
-  (testing "sample-input"
-    (is (= [[0 0] [5 2]] (find-start-and-goal sample-input))))
-
-  (testing "real input"
-    (is (= [[0 20] [119 20]] (find-start-and-goal real-input)))))
-
 (deftest test-search
   (testing "sample-input"
     (is (= 31 (search sample-input [0 0] [5 2]))))
   (testing "real input"
-    (is (= nil (search real-input [0 20] [119 20])))))
-
+    (is (= 423 (search real-input [0 20] [119 20])))))
