@@ -19,4 +19,5 @@ build
 */.lsp
 */input
 */sample-input
+*/example-input
 **/output.calva-repl
