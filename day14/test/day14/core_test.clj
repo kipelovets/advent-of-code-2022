@@ -48,4 +48,5 @@
 
 (deftest test-task2
   (is= 93 (task2 example-input))
-  (is= nil (task2 real-input)))
+  ;; (is= 27155 (task2 real-input))
+  )
