@@ -67,26 +67,41 @@
               count
               (> (count input))))))
 
-(defn drop-sand [[x y] input sand]
+(defn drop-sand [[x y] is-free is-abyss]
   (let [candidates [[x (inc y)]
                     [(dec x) (inc y)]
                     [(inc x) (inc y)]]
         free-cells (->> candidates
-                        (filter #(free? % input sand)))
+                        (filter is-free))
         next (->> free-cells
                   first)]
     (cond (empty? free-cells) [x y]
-          (within-bounds? next input) (recur next input sand)
+          (not (is-abyss [x y])) (recur next is-free is-abyss)
           :else nil)))
 
-(defn keep-dropping-sand
-  ([input]
-   (keep-dropping-sand input #{}))
-  ([input sand]
-   (let [next-rest (drop-sand [500 0] input sand)]
-     (if (nil? next-rest)
-       sand
-       (recur input (conj sand next-rest))))))
+(defn build-rocks [input]
+  (let [[[minx miny] [maxx maxy]] (input-bounds input)]
+    (set (for [y (range miny (inc maxy))
+               x (range minx (inc maxx))
+               :when (not (free? [x y] input #{}))]
+           [x y]))))
+
+(def sand-hole [500 0])
+
+(defn keep-dropping-sand [is-free-from-rocks is-abyss]
+  (loop [sand #{}]
+    (prn (count sand))
+    (let [is-free #(and (not (sand %))
+                        (is-free-from-rocks %))
+          next-rest (drop-sand sand-hole is-free is-abyss)]
+      (if (or (nil? next-rest)
+              (= sand-hole next-rest))
+        sand
+        (recur (conj sand next-rest))))))
+
+(defn task1 [input]
+  (count (keep-dropping-sand #(free? % input #{})
+                             #(not (within-bounds? % input)))))
 
 (defn print-cave [input sand]
   (let [[[minx miny] [maxx maxy]] (input-bounds input)]
@@ -99,10 +114,26 @@
                         (when (= x maxx)
                           (println))))))))
 
-(defn drop-sand-units [input sand units]
-  (if (= 0 units)
-    sand
-    (recur input
-           (conj sand (drop-sand [500 0] input sand))
-           (dec units))))
+(defn drop-sand-units
+  ([input sand units]
+   (drop-sand-units #(not (within-bounds? % input))
+                    (build-rocks input)
+                    sand
+                    units))
+  ([is-abyss rocks sand units]
+   (let [is-free #(not (or (sand %) (rocks %)))]
+     (if (= 0 units)
+       sand
+       (recur is-abyss
+              rocks
+              (conj sand (drop-sand sand-hole is-free is-abyss))
+              (dec units))))))
 
+(defn task2 [input]
+  (let [[_ [_ maxy]] (input-bounds input)
+        is-free #(and (free? % input #{})
+                      (< (last %) (+ maxy 2)))
+        is-abyss (constantly false)]
+    (-> (keep-dropping-sand is-free is-abyss)
+        count
+        inc)))

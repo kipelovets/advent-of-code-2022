@@ -37,9 +37,15 @@
   (is= true (free? [500 0] example-input #{})))
 
 (deftest test-drop-sand
-  (is= [500 8] (drop-sand [500 0] example-input #{})))
+  (is= [500 8] (drop-sand sand-hole
+                          #(free? % example-input #{})
+                          #(not (within-bounds? % example-input)))))
 
 (deftest test-keep-dropping-sand
-  (is= 24 (count (keep-dropping-sand example-input)))
-  ;; (is= 893 (count (keep-dropping-sand real-input)))
+  (is= 24 (task1 example-input))
+  ;(is= 892 (task1 real-input))
   )
+
+(deftest test-task2
+  (is= 93 (task2 example-input))
+  (is= nil (task2 real-input)))

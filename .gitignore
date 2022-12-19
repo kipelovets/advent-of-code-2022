@@ -21,3 +21,5 @@ build
 */sample-input
 */example-input
 **/output.calva-repl
+**/.idea
+**/*.iml
