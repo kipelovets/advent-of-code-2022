@@ -2,8 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]))
 
-(defn and* [a b]
-  (and a b))
+(defn or* [a b] (or a b))
 
 (def line-re
   #"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)")
@@ -27,18 +26,6 @@
   (+ (Math/abs (- (first a) (first b)))
      (Math/abs (- (last a) (last b)))))
 
-(defn x-bounds [input]
-  (let [sensor-bounds (map (fn [[sensor beacon]]
-                             (let [dist (distance sensor beacon)]
-                               [(- (first sensor) dist)
-                                (+ (first sensor) dist)])) input)]
-    [(->> sensor-bounds
-          (map first)
-          (apply min))
-     (->> sensor-bounds
-          (map last)
-          (apply max))]))
-
 (def example-input (parse-input "example-input"))
 (def real-input (parse-input "input"))
 
@@ -47,18 +34,65 @@
         sx (first sensor)
         dd (- srange (distance sensor [sx y]))]
     (if (>= 0 dd)
-      []
-      (range (- sx dd) (inc (+ sx dd))))))
+      nil
+      [(- sx dd) (inc (+ sx dd))])))
 
-(defn task1 [input y]
+(defn in-ranges [ranges x]
+  (reduce or* (map #(and (>= x (first %))
+                         (<= x (last %))) ranges)))
+
+(defn covered-on-y [input y]
   (let [coverages (->> input
                        (map #(coverage % y))
-                       (map set)
-                       (reduce set/union)
-                       count)
+                       (filter some?))
+        minx (apply min (map first coverages))
+        maxx (apply max (map last coverages))]
+    (for [x (range minx (inc maxx))
+          :when (in-ranges coverages x)]
+      x)))
+
+(defn task1 [input y]
+  (let [coverages (covered-on-y input y)
+        cov-count (count coverages)
         beacons-on-y (->> input
                           (map last)
                           (filter #(= y (last %)))
                           set
                           count)]
-    (- coverages beacons-on-y)))
+    (dec (- cov-count beacons-on-y))))
+
+(defn range-intersect? [a b]
+  (or (and (<= (first a) (first b))
+           (>= (last a) (first b)))
+      (and (<= (first a) (last b))
+           (>= (last a) (last b)))))
+
+(defn range-merge [a b]
+  [(min (first a) (first b))
+   (max (last a) (last b))])
+
+(defn free-on-y [input y]
+  (let [coverages (->> input
+                       (map #(coverage % y))
+                       (filter some?)
+                       sort)]
+    (loop [cov (first coverages)
+           covs (rest coverages)]
+      (if (empty? covs)
+        nil
+        (if (not (range-intersect? cov (first covs)))
+          (inc (last cov))
+          (recur (range-merge cov (first covs)) (rest covs)))))))
+
+
+(defn find-free [input from to]
+  (first (for [y (range from (inc to))
+               :let [x (free-on-y input y)]
+               :when (do
+                       (prn y)
+                       (some? x))]
+           [(dec x) y])))
+
+(defn task2 [input from to]
+  (let [[x y] (find-free input from to)]
+    (+ (* 4000000 x) y)))
