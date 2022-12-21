@@ -44,24 +44,27 @@
     (filter #(not (contains? open-valves-names %))
             (non-zero-valves input))))
 
+(defn path-cost [input from to]
+  (-> input (get from) :paths (get to)))
+
 (defn task1
   ([input]
-   (task1 (with-paths input) "AA" 1 []))
+   (task1 (with-paths input) "AA" 0 []))
   ([input node minute open-valves]
    (let [non-zero-valves-left (next-nodes input open-valves)]
      (if (empty? non-zero-valves-left)
        (let [res (total-pressure input open-valves)]
-         (prn open-valves res)
          res)
-       (apply max (for [next non-zero-valves-left]
-                    (if (= node next)
-                      (task1 input
-                             node
-                             (inc minute)
-                             (conj open-valves [(inc minute) node]))
-                      (task1 input
-                             next
-                             (inc (+ minute (-> input (get node) :paths (get next))))
-                             (conj open-valves [(inc minute) next])))))))))
+       (apply max ##-Inf (for [next non-zero-valves-left
+                               :let [cost (path-cost input node next)
+                                     next-min (+ 1 minute cost)
+                                     next-open-valves (conj open-valves [next-min next])]]
+                           (if (>= next-min 30)
+                             (let [res (total-pressure input open-valves)]
+                               res)
+                             (task1 input
+                                    next
+                                    next-min
+                                    next-open-valves))))))))
 
-(task1 example-input)
+(def real-input (parse-input "input"))
